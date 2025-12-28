@@ -20,7 +20,7 @@ def split_long_sentence(doc):
     
     for i in range(1, n + 1):
         for j in range(max(0, i - 100), i):  # limit search range to avoid overly long sentences
-            if i - j >= 30:  # ensure sentence length is at least 30
+            if i - j >= load_key("nlp.min_split_length"):  # ensure sentence length is at least min_split_length
                 token = doc[i-1]
                 if j == 0 or (token.is_sent_end or token.pos_ in ['VERB', 'AUX'] or token.dep_ == 'ROOT'):
                     if dp[j] + 1 < dp[i]:
@@ -44,7 +44,8 @@ def split_extremely_long_sentence(doc):
     tokens = [token.text for token in doc]
     n = len(tokens)
     
-    num_parts = (n + 59) // 60  # round up
+    max_len = load_key("nlp.max_sentence_length")
+    num_parts = (n + max_len - 1) // max_len  # round up
     
     part_length = n // num_parts
     
@@ -68,9 +69,9 @@ def split_long_by_root_main(nlp):
     all_split_sentences = []
     for sentence in sentences:
         doc = nlp(sentence.strip())
-        if len(doc) > 60:
+        if len(doc) > load_key("nlp.max_sentence_length"):
             split_sentences = split_long_sentence(doc)
-            if any(len(nlp(sent)) > 60 for sent in split_sentences):
+            if any(len(nlp(sent)) > load_key("nlp.max_sentence_length") for sent in split_sentences):
                 split_sentences = [subsent for sent in split_sentences for subsent in split_extremely_long_sentence(nlp(sent))]
             all_split_sentences.extend(split_sentences)
             rprint(f"[yellow]✂️  Splitting long sentences by root: {sentence[:30]}...[/yellow]")

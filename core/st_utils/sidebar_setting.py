@@ -37,6 +37,14 @@ def page_setting():
         if llm_support_json != load_key("api.llm_support_json"):
             update_key("api.llm_support_json", llm_support_json)
             st.rerun()
+    with st.expander(t("Split Settings"), expanded=True):
+        config_input(t("NLP Max Sentence Length"), "nlp.max_sentence_length", help=t("Sentences longer than this will be split by structure"))
+        config_input(t("NLP Min Split Length"), "nlp.min_split_length", help=t("Minimum length of a split segment"))
+        config_input(t("NLP Comma Split Threshold"), "nlp.comma_split_threshold", help=t("Minimum words on each side to split at a comma"))
+        
+        config_input(t("LLM Semantics Split Length"), "max_split_length", help=t("Maximum sentence length for LLM semantic splitting"))
+        config_input(t("Subtitle Max Char Length"), "subtitle.max_length", help=t("Maximum length of each subtitle line"))
+
     with st.expander(t("Subtitles Settings"), expanded=True):
         c1, c2 = st.columns(2)
         with c1:

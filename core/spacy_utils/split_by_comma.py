@@ -22,7 +22,8 @@ def analyze_comma(start, doc, token):
     left_words = [t for t in left_phrase if not t.is_punct]
     right_words = list(itertools.takewhile(lambda t: not t.is_punct, right_phrase)) # ! only check the first part of the right phrase
     
-    if len(left_words) <= 3 or len(right_words) <= 3:
+    threshold = load_key("nlp.comma_split_threshold")
+    if len(left_words) <= threshold or len(right_words) <= threshold:
         suitable_for_splitting = False
 
     return suitable_for_splitting
