@@ -56,6 +56,8 @@ def show_difference(str1, str2):
     print("Position markers: " + "".join("^" if i in diff_positions else " " for i in range(max(len(str1), len(str2)))))
     print(f"Difference indices: {diff_positions}")
 
+from difflib import SequenceMatcher
+
 def get_sentence_timestamps(df_words, df_sentences):
     time_stamp_list = []
     
@@ -71,32 +73,76 @@ def get_sentence_timestamps(df_words, df_sentences):
             position_to_word_idx[pos] = idx
     
     current_pos = 0
+    total_len = len(full_words_str)
+    
     for idx, sentence in df_sentences['Source'].items():
-        clean_sentence = remove_punctuation(sentence.lower()).replace(" ", "")
+        clean_sentence = remove_punctuation(str(sentence).lower()).replace(" ", "")
         sentence_len = len(clean_sentence)
+        if sentence_len == 0:
+            # Handle empty source lines gracefully
+            start_time = time_stamp_list[-1][1] if time_stamp_list else 0.0
+            time_stamp_list.append((start_time, start_time))
+            continue
+
+        best_match_score = 0
+        best_match_start = -1
+        best_match_end = -1
         
-        match_found = False
-        while current_pos <= len(full_words_str) - sentence_len:
-            if full_words_str[current_pos:current_pos+sentence_len] == clean_sentence:
-                start_word_idx = position_to_word_idx[current_pos]
-                end_word_idx = position_to_word_idx[current_pos + sentence_len - 1]
+        # Fuzzy Search Window: Search ahead up to 2x sentence length or 100 chars min
+        search_window = max(200, sentence_len * 3) 
+        
+        # Optimize: sliding window with step 1 may be slow, can optimize step if needed
+        # For strict-ish fuzzy match
+        for i in range(current_pos, min(current_pos + search_window, total_len)):
+            # Quick check length
+            # Trying to match a substring of length roughly equal to sentence_len
+            # Allow variance in length
+            for length_variance in range(-5, 6): # +/- 5 chars length
+                check_len = sentence_len + length_variance
+                if params := (i, i + check_len, total_len):
+                     if params[1] > params[2]: break
                 
-                time_stamp_list.append((
-                    float(df_words['start'][start_word_idx]),
-                    float(df_words['end'][end_word_idx])
-                ))
+                candidate = full_words_str[i : i + check_len]
+                score = SequenceMatcher(None, clean_sentence, candidate).ratio()
                 
-                current_pos += sentence_len
-                match_found = True
-                break
-            current_pos += 1
+                if score > best_match_score:
+                    best_match_score = score
+                    best_match_start = i
+                    best_match_end = i + check_len
+
+        # Threshold for accepting a match
+        if best_match_score > 0.6: # 60% similarity
+            start_word_idx = position_to_word_idx[best_match_start]
+            # carefully handle end index mapping
+            # define end_pos as the last character index included in the match
+            end_pos_search = best_match_end - 1
+            if end_pos_search not in position_to_word_idx:
+                 end_pos_search = max(k for k in position_to_word_idx if k < best_match_end)
             
-        if not match_found:
-            print(f"\n⚠️ Warning: No exact match found for sentence: {sentence}")
-            show_difference(clean_sentence, 
-                          full_words_str[current_pos:current_pos+len(clean_sentence)])
-            print("\nOriginal sentence:", df_sentences['Source'][idx])
-            raise ValueError("❎ No match found for sentence.")
+            end_word_idx = position_to_word_idx[end_pos_search]
+
+            start_t = float(df_words['start'][start_word_idx])
+            end_t = float(df_words['end'][end_word_idx])
+            
+            time_stamp_list.append((start_t, end_t))
+            current_pos = best_match_end 
+            # console.print(f"[green]Match: {best_match_score:.2f} | {sentence[:20]}...[/green]")
+        else:
+            # INTERPOLATION FALLBACK
+            console.print(f"[yellow]⚠️ Fuzzy match failed (score={best_match_score:.2f}) for: {sentence[:30]}... Using interpolation.[/yellow]")
+            
+            prev_end = time_stamp_list[-1][1] if time_stamp_list else 0.0
+            
+            # Estimate duration based on char length (rough speed: 15 chars/sec)
+            estimated_duration = max(1.0, len(clean_sentence) / 15.0)
+            new_end = prev_end + estimated_duration
+            
+            # Check if we are exceeding next known word (if any left) -- tricky without lookahead
+            # Simple fallback: use estimated times.
+            time_stamp_list.append((prev_end, new_end))
+            # Do NOT advance current_pos if we didn't find a match in the audio stream
+            # This allows the NEXT sentence to potentialy match the current_pos
+
     
     return time_stamp_list
 
