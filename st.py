@@ -120,18 +120,40 @@ def text_processing_section():
                     st.rerun()
                 return True
 
+@st.dialog("📖 字幕时间轴校准使用操作说明", width="large")
+def view_manual():
+    import re
+    import base64
+    try:
+        with open("docs/pages/docs/manual.zh-CN.md", "r", encoding="utf-8") as f:
+            md_content = f.read()
+            
+        # Split by markdown image syntax: ![alt](path)
+        parts = re.split(r'!\[.*?\]\((.*?)\)', md_content)
+        
+        for i, part in enumerate(parts):
+            if i % 2 == 0:
+                st.markdown(part)
+            else:
+                # Image path adjustment
+                img_path = part.replace("./public/images/", "docs/pages/docs/public/images/")
+                if os.path.exists(img_path):
+                    with open(img_path, "rb") as image_file:
+                        encoded_string = base64.b64encode(image_file.read()).decode()
+                    st.markdown(
+                        f'<img src="data:image/png;base64,{encoded_string}" style="border: 2px solid #e0e0e0; border-radius: 10px; width: 100%; margin: 10px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">',
+                        unsafe_allow_html=True
+                    )
+    except Exception as e:
+        st.error(f"Could not load manual: {e}")
+
 def main():
-    logo_col, help_col = st.columns([1, 1])
+    logo_col, help_col = st.columns([1, 1], vertical_alignment="center")
     with logo_col:
         st.image("docs/logo.png", use_column_width=True)
     with help_col:
-        st.markdown("""
-            <div style="text-align: right; padding-top: 20px;">
-                <a href="https://videolingo.io/docs/manual" target="_blank" style="font-size: 1.2em; color: #144070; text-decoration: none; font-weight: bold;">
-                    📖 字幕时间轴校准使用操作说明
-                </a>
-            </div>
-        """, unsafe_allow_html=True)
+        if st.button("📖 字幕时间轴校准使用操作说明", key="manual_btn", help="点击查看详细操作手册"):
+            view_manual()
     st.markdown(button_style, unsafe_allow_html=True)
     welcome_text = t("Hello, welcome to VideoLingo. If you encounter any issues, feel free to get instant answers with our Free QA Agent <a href=\"https://share.fastgpt.in/chat/share?shareId=066w11n3r9aq6879r4z0v9rh\" target=\"_blank\">here</a>! You can also try out our SaaS website at <a href=\"https://videolingo.io\" target=\"_blank\">videolingo.io</a> for free!")
     st.markdown(f"<p style='font-size: 20px; color: #808080;'>{welcome_text}</p>", unsafe_allow_html=True)
