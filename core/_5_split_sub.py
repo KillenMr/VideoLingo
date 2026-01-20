@@ -104,17 +104,19 @@ def split_for_sub_main():
     MAX_SUB_LENGTH = subtitle_set["max_length"]
     TARGET_SUB_MULTIPLIER = subtitle_set["target_multiplier"]
     
-    for attempt in range(3):  # 多次切割
-        console.print(Panel(f"🔄 Split attempt {attempt + 1}", expand=False))
-        split_src, split_trans, remerged = split_align_subs(src.copy(), trans)
+    # for attempt in range(3):  # 多次切割
+    #     console.print(Panel(f"🔄 Split attempt {attempt + 1}", expand=False))
+    #     split_src, split_trans, remerged = split_align_subs(src.copy(), trans)
         
-        # 检查是否所有字幕都符合长度要求
-        if all(len(src) <= MAX_SUB_LENGTH for src in split_src) and \
-           all(calc_len(tr) * TARGET_SUB_MULTIPLIER <= MAX_SUB_LENGTH for tr in split_trans):
-            break
+    #     # 检查是否所有字幕都符合长度要求
+    #     if all(len(src) <= MAX_SUB_LENGTH for src in split_src) and \
+    #        all(calc_len(tr) * TARGET_SUB_MULTIPLIER <= MAX_SUB_LENGTH for tr in split_trans):
+    #         break
         
-        # 更新源数据继续下一轮分割
-        src, trans = split_src, split_trans
+    #     # 更新源数据继续下一轮分割
+    #     src, trans = split_src, split_trans
+
+    split_src, split_trans, remerged = src, trans, trans
 
     # 确保二者有相同的长度，防止报错
     if len(src) > len(remerged):

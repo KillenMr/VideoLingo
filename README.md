@@ -15,6 +15,7 @@
 VideoLingo is an all-in-one video translation, localization, and dubbing tool aimed at generating Netflix-quality subtitles. It eliminates stiff machine translations and multi-line subtitles while adding high-quality dubbing, enabling global knowledge sharing across language barriers.
 
 Key features:
+
 - 🎥 YouTube video download via yt-dlp
 
 - **🎙️ Word-level and Low-illusion subtitle recognition with WhisperX**
@@ -44,21 +45,27 @@ Difference from similar projects: **Single-line subtitles only, superior transla
 <td width="33%">
 
 ### Dual Subtitles
+
 ---
+
 https://github.com/user-attachments/assets/a5c3d8d1-2b29-4ba9-b0d0-25896829d951
 
 </td>
 <td width="33%">
 
 ### Cosy2 Voice Clone
+
 ---
+
 https://github.com/user-attachments/assets/e065fe4c-3694-477f-b4d6-316917df7c0a
 
 </td>
 <td width="33%">
 
 ### GPT-SoVITS with my voice
+
 ---
+
 https://github.com/user-attachments/assets/47d965b2-b4ab-4a0b-9d08-b49a7bf3508c
 
 </td>
@@ -69,9 +76,9 @@ https://github.com/user-attachments/assets/47d965b2-b4ab-4a0b-9d08-b49a7bf3508c
 
 **Input Language Support(more to come):**
 
-🇺🇸 English 🤩 | 🇷🇺 Russian 😊 | 🇫🇷 French 🤩 | 🇩🇪 German 🤩 | 🇮🇹 Italian 🤩 | 🇪🇸 Spanish 🤩 | 🇯🇵 Japanese 😐 | 🇨🇳 Chinese* 😊
+🇺🇸 English 🤩 | 🇷🇺 Russian 😊 | 🇫🇷 French 🤩 | 🇩🇪 German 🤩 | 🇮🇹 Italian 🤩 | 🇪🇸 Spanish 🤩 | 🇯🇵 Japanese 😐 | 🇨🇳 Chinese\* 😊
 
-> *Chinese uses a separate punctuation-enhanced whisper model, for now...
+> \*Chinese uses a separate punctuation-enhanced whisper model, for now...
 
 **Translation supports all languages, while dubbing language depends on the chosen TTS method.**
 
@@ -80,15 +87,17 @@ https://github.com/user-attachments/assets/47d965b2-b4ab-4a0b-9d08-b49a7bf3508c
 Meet any problem? Chat with our free online AI agent [**here**](https://share.fastgpt.in/chat/share?shareId=066w11n3r9aq6879r4z0v9rh) to help you.
 
 > **Note:** For Windows users with NVIDIA GPU, follow these steps before installation:
+>
 > 1. Install [CUDA Toolkit 12.6](https://developer.download.nvidia.com/compute/cuda/12.6.0/local_installers/cuda_12.6.0_560.76_windows.exe)
 > 2. Install [CUDNN 9.3.0](https://developer.download.nvidia.com/compute/cudnn/9.3.0/local_installers/cudnn_9.3.0_windows.exe)
 > 3. Add `C:\Program Files\NVIDIA\CUDNN\v9.3\bin\12.6` to your system PATH
 > 4. Restart your computer
 
 > **Note:** FFmpeg is required. Please install it via package managers:
-> - Windows: ```choco install ffmpeg``` (via [Chocolatey](https://chocolatey.org/))
-> - macOS: ```brew install ffmpeg``` (via [Homebrew](https://brew.sh/))
-> - Linux: ```sudo apt install ffmpeg``` (Debian/Ubuntu)
+>
+> - Windows: `choco install ffmpeg` (via [Chocolatey](https://chocolatey.org/))
+> - macOS: `brew install ffmpeg` (via [Homebrew](https://brew.sh/))
+> - Linux: `sudo apt install ffmpeg` (Debian/Ubuntu)
 
 1. Clone the repository
 
@@ -112,6 +121,7 @@ streamlit run st.py
 ```
 
 ### Docker
+
 Alternatively, you can use Docker (requires CUDA 12.4 and NVIDIA Driver version >550), see [Docker docs](/docs/pages/docs/docker.en-US.md):
 
 ```bash
@@ -120,7 +130,9 @@ docker run -d -p 8501:8501 --gpus all videolingo
 ```
 
 ## APIs
+
 VideoLingo supports OpenAI-Like API format and various TTS interfaces:
+
 - LLM: `claude-3-5-sonnet`, `gpt-4.1`, `deepseek-v3`, `gemini-2.0-flash`, ... (sorted by performance, be cautious with gemini-2.5-flash...)
 - WhisperX: Run whisperX (large-v3) locally or use 302.ai API
 - TTS: `azure-tts`, `openai-tts`, `siliconflow-fishtts`, **`fish-tts`**, `GPT-SoVITS`, `edge-tts`, `*custom-tts`(You can modify your own TTS in custom_tts.py!)

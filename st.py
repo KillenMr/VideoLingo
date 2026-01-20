@@ -121,9 +121,17 @@ def text_processing_section():
                 return True
 
 def main():
-    logo_col, _ = st.columns([1,1])
+    logo_col, help_col = st.columns([1, 1])
     with logo_col:
         st.image("docs/logo.png", use_column_width=True)
+    with help_col:
+        st.markdown("""
+            <div style="text-align: right; padding-top: 20px;">
+                <a href="https://videolingo.io/docs/manual" target="_blank" style="font-size: 1.2em; color: #144070; text-decoration: none; font-weight: bold;">
+                    📖 字幕时间轴校准使用操作说明
+                </a>
+            </div>
+        """, unsafe_allow_html=True)
     st.markdown(button_style, unsafe_allow_html=True)
     welcome_text = t("Hello, welcome to VideoLingo. If you encounter any issues, feel free to get instant answers with our Free QA Agent <a href=\"https://share.fastgpt.in/chat/share?shareId=066w11n3r9aq6879r4z0v9rh\" target=\"_blank\">here</a>! You can also try out our SaaS website at <a href=\"https://videolingo.io\" target=\"_blank\">videolingo.io</a> for free!")
     st.markdown(f"<p style='font-size: 20px; color: #808080;'>{welcome_text}</p>", unsafe_allow_html=True)
