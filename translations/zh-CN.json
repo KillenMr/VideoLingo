@@ -106,6 +106,9 @@
     "No NVIDIA GPU detected": "未检测到NVIDIA GPU",
     "No NVIDIA GPU detected or NVIDIA drivers not properly installed": "未检测到NVIDIA GPU或NVIDIA驱动未正确安装",
     "LLM JSON Format Support": "LLM JSON格式支持",
-    "Enable if your LLM supports JSON mode output": "如果选用的LLM支持JSON模式输出，请启用"
+    "Enable if your LLM supports JSON mode output": "如果选用的LLM支持JSON模式输出，请启用",
+    "🚀 Advanced: Upload Subtitles for Force Alignment": "🚀 高级功能：上传字幕以进行强制对齐",
+    "Upload a custom subtitle file (.xlsx) with 'Source' and 'Translation' columns to skip Step 2/3/4 and directly align timestamps.": "上传包含 'Source' 和 'Translation' 列的自定义字幕文件(.xlsx)，可直接跳过 Step 2/3/4 并进行时间轴对齐。",
+    "Upload custom subtitles": "上传自定义字幕",
+    "💾 Save & Skip to Step 5": "💾 保存并跳转至 Step 5"
 }
-
